@@ -3,7 +3,7 @@ use clap::{
 };
 
 #[allow(non_camel_case_types)]
-#[derive(clap::ValueEnum, Clone)]
+#[derive(clap::ValueEnum, Clone, Debug)]
 pub enum Action {
     install,
     uninstall,
@@ -12,7 +12,7 @@ pub enum Action {
     list,
 }
 
-#[derive(Parser)]
+#[derive(Parser, Debug, Clone)]
 #[clap(author="Atsukoro1", about="Cross-platform node.js version manager")]
 pub struct Args {
     /// Specifies the type of action to perform.
@@ -49,7 +49,7 @@ pub struct Args {
     /// If not specified, the default path will be used.
     /// 
     /// The default path is same as nodepath.
-    #[clap(short, long, required=false, parse(from_os_str))]
+    #[clap(long, required=false, parse(from_os_str))]
     nmppath: Option<std::path::PathBuf>,
 
     /// Specifies the path to the npx installation directory.
@@ -59,17 +59,36 @@ pub struct Args {
     /// 
     /// If the npx path is not specified, npx will be installed in the same
     /// directory as npm.
-    #[clap(short, long, required=false, parse(from_os_str))]
+    #[clap(long, required=false, parse(from_os_str))]
     npxpath: Option<std::path::PathBuf>,
 }
 
 impl Args {
-    /// This is only done to assign npm path to npx path,
-    /// if npx path is not specified.
+    /// Assign path based on used operating system
+    fn assign_path(&mut self) {
+        if self.nodepath.is_none() {
+            self.nodepath = Some(std::path::PathBuf::from(
+                dirs::home_dir().unwrap().join(".nodejs")
+            ));
+        }
+    }
+
+    /// This function is used to parse the arguments and do the following operations:
+    /// 1. Check if npm path is specified, if not, set it to the same as nodepath.
+    /// 2. Check if npx path is specified, if not, set it to the same as nmppath or nodepath.
+    /// 3. Assign default values to the paths if they are not specified.
+    /// 
+    /// Then return the parsed and patched arguments
     pub fn parse_patched() -> Self {
         let mut args = Self::parse();
 
-        if args.nmppath.is_some() && args.npxpath.is_none() {
+        args.assign_path();
+
+        if args.nmppath.is_none() {
+            args.nmppath = args.nodepath.clone();
+        }
+        
+        if args.npxpath.is_none() {
             args.npxpath = args.nmppath.clone();
         }
 
