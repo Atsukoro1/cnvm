@@ -1,0 +1,10 @@
+[package]
+name = "cnvm"
+author = "Jakub Dorničák"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Add clap with arg enum support
+clap = { version = "3.0.0-beta.2", features = ["derive"] }
+clap_derive = { version = "4.0.10" }
