@@ -9,7 +9,6 @@ pub enum Action {
     uninstall,
     switch,
     help,
-    list,
 }
 
 #[derive(Parser, Debug, Clone)]
