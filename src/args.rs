@@ -59,6 +59,17 @@ pub struct Args {
         parse(from_os_str),
     )]
     pub path: Option<std::path::PathBuf>,
+
+    /// CNVM path flag, this is the path to the folder that will contain following things
+    ///    - `nodejs folder` - Folder that contains all the node.js versions
+    ///    - `config.json file` - File that contains information about installed versions
+    #[clap(
+        short, 
+        long,
+        required=false,
+        parse(from_os_str),
+    )]
+    pub cnvm_path: Option<std::path::PathBuf>,
 }
 
 impl Args {
@@ -74,6 +85,12 @@ impl Args {
         if args.path.is_none() {
             args.path = Some(std::path::PathBuf::from(
                 dirs::home_dir().unwrap().join(".nodejs")
+            ));
+        }
+
+        if args.cnvm_path.is_none() {
+            args.cnvm_path = Some(std::path::PathBuf::from(
+                dirs::home_dir().unwrap().join(".cnvm")
             ));
         }
 

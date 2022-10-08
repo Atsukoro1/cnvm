@@ -12,6 +12,7 @@ async fn main() {
         arguments.version,
         arguments.npmversion,
         arguments.path.unwrap(), 
+        arguments.cnvm_path.unwrap()
     );
 
     // Run a command from command folder based on action argument

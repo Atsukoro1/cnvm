@@ -10,7 +10,7 @@ use super::Error;
 /// * `nodeversion` - Version of node.js to uninstall
 /// * `npmversion` - Version of npm to uninstall
 /// * `configpath` - Path to the json config file
-pub async fn execute(args: (Option<String>, Option<String>, PathBuf)) -> Result<(), Error> {
+pub async fn execute(args: (Option<String>, Option<String>, PathBuf, PathBuf)) -> Result<(), Error> {
     println!("Installing");
 
     Ok(())
