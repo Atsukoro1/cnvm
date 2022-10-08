@@ -1,5 +1,5 @@
-use std::path::PathBuf;
 use crate::filesystem::cnvm;
+use std::path::PathBuf;
 use super::{
     Error,
     NodeVersion
@@ -90,7 +90,7 @@ pub async fn install_npm(args: (&Option<String>, &Option<String>, &PathBuf, &Pat
 /// 
 /// * `nodeversion` - Version of node.js to install
 /// * `npmversion` - Version of npm to install
-/// * `configpath` - Path to the json config file
+/// * `nodepath` - Path where node should be symlinked
 /// * `cnvmpath` - Path to the cnvm folder
 pub async fn execute(args: (Option<String>, Option<String>, PathBuf, PathBuf)) -> Result<(), Error> {
     let node_version = fetch_node_version(&args.0).await?;
@@ -114,11 +114,13 @@ pub async fn execute(args: (Option<String>, Option<String>, PathBuf, PathBuf)) -
         return Err(Error::ConfigFileError(None));
     };
 
-    println!("{:?}", &args.3);
-
-
-    cnvm::create_node(node_version, &args.3, &node_bytes, &npm_bytes)
-    .expect("Bruh!");
+    cnvm::create_node(node_version.clone(), &args.3, &node_bytes, &npm_bytes)
+        .expect("Bruh!");
+        
+    cnvm::symlink_node(
+        &args.3.join(&node_version.version.clone()), 
+        &args.2
+    ).expect("msg");
 
     Ok(())
 }

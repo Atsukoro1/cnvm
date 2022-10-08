@@ -49,9 +49,9 @@ pub struct Args {
     /// done to prevent moving large folders when switching versions.
     /// 
     /// The default path is:
-    ///     - Windows: %USERPROFILE%\.nodejs
-    ///     - Linux: $HOME/.nodejs
-    ///     - MacOS: $HOME/.nodejs
+    ///     - Windows: %USERPROFILE%\nodejs
+    ///     - Linux: $HOME/nodejs
+    ///     - MacOS: $HOME/nodejs
     #[clap(
         short, 
         long, 
@@ -84,7 +84,7 @@ impl Args {
 
         if args.path.is_none() {
             args.path = Some(std::path::PathBuf::from(
-                dirs::home_dir().unwrap().join(".nodejs")
+                dirs::home_dir().unwrap().join("nodejs")
             ));
         }
 

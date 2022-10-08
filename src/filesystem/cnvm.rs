@@ -53,3 +53,23 @@ pub fn create_node(
 
     Ok(())
 }
+
+/// Symlink the directory from cnvm directory to the path 
+/// where the used version of node.js will be located
+///
+/// # Arguments:
+/// 
+/// * `cnvmpath` - Path to the cnvm folder
+/// * `nodepath` - Path to the node folder
+/// 
+/// # Returns:
+/// 
+/// * `Result<(), Error>` - Result of the function
+#[cfg(target_os = "windows")]
+pub fn symlink_node(cnvmpath: &PathBuf, nodepath: &PathBuf) -> Result<(), Error> {
+    std::os::windows::fs::symlink_dir(cnvmpath, nodepath).map_err(|err| {
+        Error::PermissionError(Some(err.to_string()))
+    })?;
+
+    Ok(())
+}
