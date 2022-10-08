@@ -1,9 +1,18 @@
-use crate::filesystem::cnvm;
+use crate::filesystem::{
+    cnvm,
+    node
+};
 use std::path::PathBuf;
+use console::{Emoji, style};
 use super::{
     Error,
     NodeVersion
 };
+
+const DOWNLOAD: Emoji = Emoji("📥 ", " ");
+const MAGNIFYING_GLASS: Emoji<'_, '_> = Emoji("🔍 ", " ");
+const BOX: Emoji<'_, '_> = Emoji("📦 ", " ");
+const CHECK: Emoji = Emoji("✅ ", " ");
 
 /// Will fetch bytes from remote resource and return a vector of them
 pub async fn fetch_bytes(url: &str) -> Vec<u8> {
@@ -93,8 +102,18 @@ pub async fn install_npm(args: (&Option<String>, &Option<String>, &PathBuf, &Pat
 /// * `nodepath` - Path where node should be symlinked
 /// * `cnvmpath` - Path to the cnvm folder
 pub async fn execute(args: (Option<String>, Option<String>, PathBuf, PathBuf)) -> Result<(), Error> {
+    println!(
+        "{} {} Looking up information about the node version..", 
+        style("[1/5]").bold().dim(),
+        MAGNIFYING_GLASS
+    );
     let node_version = fetch_node_version(&args.0).await?;
 
+    println!(
+        "{} {} Downloading node executable...", 
+        style("[2/5]").bold().dim(),
+        DOWNLOAD
+    );
     let node_bytes = install_node((
         &Some(node_version.version.clone()), 
         &args.1, 
@@ -102,6 +121,11 @@ pub async fn execute(args: (Option<String>, Option<String>, PathBuf, PathBuf)) -
         &args.3
     )).await;
 
+    println!(
+        "{} {} Downloading npm...", 
+        style("[3/5]").bold().dim(),
+        BOX
+    );
     let npm_bytes = install_npm((
         &Some(node_version.version.clone()), 
         &args.1,
@@ -114,13 +138,20 @@ pub async fn execute(args: (Option<String>, Option<String>, PathBuf, PathBuf)) -
         return Err(Error::ConfigFileError(None));
     };
 
-    cnvm::create_node(node_version.clone(), &args.3, &node_bytes, &npm_bytes)
+    node::create_node(node_version.clone(), &args.3, &node_bytes, &npm_bytes)
         .expect("Bruh!");
-        
-    cnvm::symlink_node(
+
+    node::symlink_node(
         &args.3.join(&node_version.version.clone()), 
         &args.2
     ).expect("msg");
+
+    println!(
+        "{} {} {}",
+        style("NodeJS succefully installed!").bold().green(), 
+        style("[5/5]").bold().dim(),
+        CHECK
+    );
 
     Ok(())
 }

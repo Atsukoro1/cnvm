@@ -1,6 +1,7 @@
 use quick_error::quick_error;
 
 pub mod cnvm;
+pub mod node;
 
 quick_error! {
     #[derive(Debug)]
