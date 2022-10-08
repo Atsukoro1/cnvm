@@ -3,6 +3,7 @@ extern crate clap_derive;
 
 mod args;
 mod commands;
+mod filesystem;
 
 #[allow(unused)]
 #[tokio::main]

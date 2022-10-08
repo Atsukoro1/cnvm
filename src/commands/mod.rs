@@ -1,17 +1,28 @@
 use serde::{Serialize, Deserialize};
+use quick_error::quick_error;
 
 pub mod install;
 pub mod uninstall;
 pub mod switch;
 
-#[repr(u8)]
-#[derive(Debug)]
-pub enum Error {
-    /// Can't create a new Reqwest client for some reason
-    ClientInstantiateError = 0x00,
+quick_error! {
+    #[derive(Debug)]
+    pub enum Error {
+        /// An invalid version of NodeJS was provided
+        InvalidVersion(err: Option<String>) {
+            display(
+                "An invalid version of NodeJS was provided! {}", 
+                err.as_ref().unwrap_or(&"".to_string())
+            )
+        }
 
-    /// User specified invalid version of node.js
-    InvalidVersion = 0x02,
+        ConfigFileError(err: Option<String>) {
+            display(
+                "An error occured while trying to read or write to the config file! {}", 
+                err.as_ref().unwrap_or(&"".to_string())
+            )
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

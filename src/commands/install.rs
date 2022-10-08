@@ -1,4 +1,5 @@
 use std::path::PathBuf;
+use crate::filesystem::cnvm;
 use super::{
     Error,
     NodeVersion
@@ -51,8 +52,8 @@ pub async fn fetch_node_version(
     };
 
     if found.is_none() {
-        return Err(Error::InvalidVersion);
-    }
+        return Err(Error::InvalidVersion(None));
+    };
 
     Ok(found.unwrap().clone())
 }
@@ -92,9 +93,7 @@ pub async fn install_npm(args: (&Option<String>, &Option<String>, &PathBuf, &Pat
 /// * `configpath` - Path to the json config file
 /// * `cnvmpath` - Path to the cnvm folder
 pub async fn execute(args: (Option<String>, Option<String>, PathBuf, PathBuf)) -> Result<(), Error> {
-    let node_version = fetch_node_version(&args.0)
-        .await
-        .expect("Failed to fetch node version");
+    let node_version = fetch_node_version(&args.0).await?;
 
     let node_bytes = install_node((
         &Some(node_version.version.clone()), 
@@ -110,8 +109,16 @@ pub async fn execute(args: (Option<String>, Option<String>, PathBuf, PathBuf)) -
         &args.3
     )).await;
 
-    println!("{}", node_bytes.len());
-    println!("{}", npm_bytes.len());
+    let cfg_creation = cnvm::config_file_init(&args.3);
+    if cfg_creation.is_err() {
+        return Err(Error::ConfigFileError(None));
+    };
+
+    println!("{:?}", &args.3);
+
+
+    cnvm::create_node(node_version, &args.3, &node_bytes, &npm_bytes)
+    .expect("Bruh!");
 
     Ok(())
 }
