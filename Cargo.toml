@@ -10,3 +10,5 @@ clap_derive = { version = "4.0.10" }
 dirs = "4.0.0"
 reqwest = "0.11.12"
 tokio = { version = "1.21.2", features = ["full"] }
+indicatif = "0.17.1"
+console = "0.15.2"
