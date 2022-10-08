@@ -32,6 +32,15 @@ pub struct Args {
         ])
     )]
     pub version: Option<String>,
+
+    /// Version flag of NPM that will only be required if the action 
+    /// is install, uninstall or switch
+    #[clap(
+        short, 
+        long, 
+        required=false
+    )]
+    pub npmversion: Option<String>,
     
     /// Specifies the path to the node.js installation directory.
     /// If not specified, the default path will be used.
@@ -49,25 +58,7 @@ pub struct Args {
         required=false, 
         parse(from_os_str),
     )]
-    pub nodepath: Option<std::path::PathBuf>,
-
-
-    /// Specifies the path to the json config file
-    /// 
-    /// The default path is:
-    ///     - Windows: %USERPROFILE%\.cnvm\config.json
-    ///     - Linux: $HOME/.cnvm/config.json
-    ///     - MacOS: $HOME/.cnvm/config.json
-    /// 
-    /// The config file is used to store all these things
-    /// - The path to the node.js folder symlink
-    #[clap(
-        short, 
-        long, 
-        required=false, 
-        parse(from_os_str)
-    )]
-    pub configpath: Option<std::path::PathBuf>,
+    pub path: Option<std::path::PathBuf>,
 }
 
 impl Args {
@@ -80,15 +71,9 @@ impl Args {
     pub fn parse_patched() -> Self {
         let mut args = Self::parse();
 
-        if args.nodepath.is_none() {
-            args.nodepath = Some(std::path::PathBuf::from(
+        if args.path.is_none() {
+            args.path = Some(std::path::PathBuf::from(
                 dirs::home_dir().unwrap().join(".nodejs")
-            ));
-        }
-
-        if args.configpath.is_none() {
-            args.configpath = Some(std::path::PathBuf::from(
-                dirs::home_dir().unwrap().join(".cnvm/config.json")
             ));
         }
 

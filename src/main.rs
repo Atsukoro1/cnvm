@@ -10,8 +10,8 @@ async fn main() {
     let arguments: args::Args = args::Args::parse_patched();
     let para = (
         arguments.version,
-        arguments.nodepath.unwrap(), 
-        arguments.configpath.unwrap()
+        arguments.npmversion,
+        arguments.path.unwrap(), 
     );
 
     // Run a command from command folder based on action argument

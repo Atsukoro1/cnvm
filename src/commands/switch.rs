@@ -5,10 +5,10 @@ use super::Error;
 /// 
 /// # Arguments
 /// 
-/// * `version` - Version of node.js to switch to
-/// * `nodepath` - Path to the node.js installation directory
+/// * `nodeversion` - Version of node.js to switch to
+/// * `npmversion` - Version of npm to switch to
 /// * `configpath` - Path to the json config file
-pub async fn execute(args: (Option<String>, PathBuf, PathBuf)) -> Result<(), Error> {
+pub async fn execute(args: (Option<String>, Option<String>, PathBuf)) -> Result<(), Error> {
     println!("Installing");
 
     Ok(())
