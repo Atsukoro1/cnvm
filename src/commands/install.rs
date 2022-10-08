@@ -42,7 +42,6 @@ pub async fn fetch_node_version(
         latest_stable
     } else {
         // If version is specified, get the version that matches the user input
-        println!("{}", version.as_ref().unwrap());
         let version = versions.iter()
             .find(
                 |v| v.version == ("v".to_owned() + version.as_ref().unwrap())
@@ -61,7 +60,7 @@ pub async fn fetch_node_version(
 /// Fetch from resource and save the Node executable to path
 #[cfg(target_os = "windows")]
 pub async fn install_node(args: (&Option<String>, &Option<String>, &PathBuf, &PathBuf)) -> Vec<u8> {
-    let bytes = fetch_bytes(format!("https://nodejs.org/dist/v{}/win-x64/node.exe", 
+    let bytes = fetch_bytes(format!("https://nodejs.org/dist/{}/win-x64/node.exe", 
         &*args.0.as_ref().unwrap()
     ).as_str()).await;
 
