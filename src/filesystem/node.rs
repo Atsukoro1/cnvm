@@ -1,5 +1,5 @@
 use std::path::PathBuf;
-use crate::commands::NodeVersion;
+use super::paths::node_path;
 use super::Error;
 
 /// This function will download the compressed node.js zip file
@@ -11,7 +11,6 @@ use super::Error;
 /// * `cnvmpath` - Path to the cnvm folder
 /// * `node_bytes` - Bytes of the node executable
 pub fn create_node(
-    data: NodeVersion,
     path: &PathBuf, 
     node_bytes: &Vec<u8>
 ) -> Result<(), Error> {
@@ -43,8 +42,10 @@ pub fn create_node(
 /// 
 /// * `Result<(), Error>` - Result of the function
 #[cfg(target_os = "windows")]
-pub fn symlink_node(cnvmpath: &PathBuf, nodepath: &PathBuf) -> Result<(), Error> {
-    std::os::windows::fs::symlink_dir(cnvmpath, nodepath).map_err(|err| {
+pub fn symlink_node(cnvmpath: &PathBuf, version: String, nodepath: &PathBuf) -> Result<(), Error> {
+    let path = cnvmpath.join(node_path(version));
+
+    std::os::windows::fs::symlink_dir(path, nodepath).map_err(|err| {
         Error::PermissionError(Some(err.to_string()))
     })?;
 
@@ -62,8 +63,8 @@ pub fn symlink_node(cnvmpath: &PathBuf, nodepath: &PathBuf) -> Result<(), Error>
 /// # Returns:
 /// 
 /// * `Result<(), Error>` - Result of the function
-pub fn remove_symlink(cnvmpath: &PathBuf, nodepath: &PathBuf) -> Result<(), Error> {
-    if nodepath.exists() {
+pub fn remove_symlink(nodepath: &PathBuf) -> Result<(), Error> {
+    if nodepath.is_symlink() {
         std::fs::remove_dir_all(nodepath).map_err(|err| {
             Error::PermissionError(Some(err.to_string()))
         })?;

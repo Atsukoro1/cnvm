@@ -1,9 +1,9 @@
 use console::style;
 use crate::{
-    filesystem::{node::{
+    filesystem::node::{
         remove_symlink, 
         self
-    }, paths::node_path}, 
+    }, 
     commands::{
         BOX, 
         CHECK
@@ -39,9 +39,10 @@ pub async fn execute(args: (Option<String>, Option<String>, PathBuf, PathBuf)) -
         &node_version
     );
 
-    remove_symlink(&args.3, &args.2).expect("remove symlink failed");
+    remove_symlink(&args.2).expect("remove symlink failed");
     node::symlink_node(
-        &args.3.join(node_path(node_version)), 
+        &args.3,
+        node_version, 
         &args.2
     ).expect("linked failing");
 

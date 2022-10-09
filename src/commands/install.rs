@@ -5,6 +5,7 @@ use crate::{filesystem::{
     commands::switch::execute as switch
 };
 use std::path::PathBuf;
+use crate::filesystem::paths::node_path;
 use console::style;
 use super::{
     Error,
@@ -71,26 +72,10 @@ pub async fn fetch_node_version(
 /// Fetch from resource and save the Node executable to path
 #[cfg(target_os = "windows")]
 pub async fn install_node(args: (&Option<String>, &Option<String>, &PathBuf, &PathBuf)) -> Vec<u8> {
-    let bytes = fetch_bytes(format!("https://nodejs.org/dist/{}/node-{}-win-x64.zip", 
+    let bytes = fetch_bytes(format!("https://nodejs.org/dist/{}/{}.zip", 
         args.0.as_ref().unwrap(), 
-        args.0.as_ref().unwrap()
+        node_path(args.0.as_ref().unwrap().clone())
     ).as_str()).await;
-
-    bytes
-}
-
-/// Fetch from resource and save the NPM executable to path
-#[cfg(target_os = "windows")]
-pub async fn install_npm(args: (&Option<String>, &Option<String>, &PathBuf, &PathBuf)) -> Vec<u8> {
-    let url = if args.1.is_some() {
-        format!("https://nodejs.org/dist/npm/npm-{}.zip", 
-            &*args.1.as_ref().unwrap()
-        ).to_owned()
-    } else {
-        "https://nodejs.org/dist/npm/npm-1.4.9.zip".to_owned()
-    };
-
-    let bytes = fetch_bytes(&url).await;
 
     bytes
 }
@@ -106,14 +91,14 @@ pub async fn install_npm(args: (&Option<String>, &Option<String>, &PathBuf, &Pat
 pub async fn execute(args: (Option<String>, Option<String>, PathBuf, PathBuf)) -> Result<(), Error> {
     println!(
         "{} {} Looking up information about the node version..", 
-        style("[1/4]").bold().dim(),
+        style("[1/3]").bold().dim(),
         MAGNIFYING_GLASS
     );
     let node_version = fetch_node_version(&args.0).await?;
 
     println!(
         "{} {} Downloading node executable...", 
-        style("[2/4]").bold().dim(),
+        style("[2/3]").bold().dim(),
         DOWNLOAD
     );
     let node_bytes = install_node((
@@ -128,14 +113,19 @@ pub async fn execute(args: (Option<String>, Option<String>, PathBuf, PathBuf)) -
         return Err(Error::ConfigFileError(None));
     };
 
-    node::create_node(node_version.clone(), &args.3, &node_bytes)
+    println!(
+        "{} {} Unzipping data...", 
+        style("[3/3]").bold().dim(),
+        BOX
+    );
+    node::create_node(&args.3, &node_bytes)
         .expect("Bruh!");
 
     println!(
         "{} {} {}",
-        style("NodeJS succefully installed!").bold().green(), 
         style("[4/4]").bold().dim(),
-        CHECK
+        CHECK,
+        style("NodeJS succefully installed!").bold().green(),
     );
 
     switch((Some(node_version.version), args.1, args.2, args.3))
