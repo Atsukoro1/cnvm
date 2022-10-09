@@ -1,5 +1,6 @@
 use serde::{Serialize, Deserialize};
 use quick_error::quick_error;
+use console::Emoji;
 
 pub mod install;
 pub mod uninstall;
@@ -33,3 +34,9 @@ pub struct NodeVersion {
     pub date: String,
     pub files: Vec<String>
 }
+
+const DOWNLOAD: Emoji = Emoji("📥 ", " ");
+const MAGNIFYING_GLASS: Emoji<'_, '_> = Emoji("🔍 ", " ");
+const BOX: Emoji<'_, '_> = Emoji("📦 ", " ");
+const CHECK: Emoji = Emoji("✅ ", " ");
+pub const CROSS: Emoji = Emoji("❌ ", " ");

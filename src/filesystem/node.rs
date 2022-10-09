@@ -53,3 +53,42 @@ pub fn symlink_node(cnvmpath: &PathBuf, nodepath: &PathBuf) -> Result<(), Error>
 
     Ok(())
 }
+
+/// Remove the symlinked directory from the path where the used 
+/// version of node.js is located
+/// 
+/// # Arguments:
+/// 
+/// * `cnvmpath` - Path to the cnvm folder
+/// * `nodepath` - Path to the node folder
+/// 
+/// # Returns:
+/// 
+/// * `Result<(), Error>` - Result of the function
+pub fn remove_symlink(cnvmpath: &PathBuf, nodepath: &PathBuf) -> Result<(), Error> {
+    std::fs::remove_dir_all(nodepath).map_err(|err| {
+        Error::PermissionError(Some(err.to_string()))
+    })?;
+
+    Ok(())
+}
+
+/// Remove the node version from the cnvm directory
+/// 
+/// # Arguments:
+/// 
+/// * `nodeversion` - Version of node.js to remove
+/// * `cnvmpath` - Path to the cnvm folder
+/// 
+/// # Returns:
+/// 
+/// * `Result<(), Error>` - Result of the function
+pub fn remove_node(nodeversion: &str, cnvmpath: &PathBuf) -> Result<(), Error> {
+    let node_path = cnvmpath.join(nodeversion);
+    
+    std::fs::remove_dir_all(&node_path).map_err(|err| {
+        Error::PermissionError(Some(err.to_string()))
+    })?;
+
+    Ok(())
+}

@@ -1,6 +1,4 @@
 use std::path::PathBuf;
-use crate::commands::NodeVersion;
-
 use super::Error;
 
 /// This function will create config file if it does not exist

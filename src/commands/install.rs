@@ -1,18 +1,19 @@
-use crate::filesystem::{
+use crate::{filesystem::{
     cnvm,
     node
+}, 
+    commands::switch::execute as switch
 };
 use std::path::PathBuf;
-use console::{Emoji, style};
+use console::style;
 use super::{
     Error,
-    NodeVersion
+    NodeVersion,
+    MAGNIFYING_GLASS,
+    CHECK,
+    BOX,
+    DOWNLOAD
 };
-
-const DOWNLOAD: Emoji = Emoji("📥 ", " ");
-const MAGNIFYING_GLASS: Emoji<'_, '_> = Emoji("🔍 ", " ");
-const BOX: Emoji<'_, '_> = Emoji("📦 ", " ");
-const CHECK: Emoji = Emoji("✅ ", " ");
 
 /// Will fetch bytes from remote resource and return a vector of them
 pub async fn fetch_bytes(url: &str) -> Vec<u8> {
@@ -104,14 +105,14 @@ pub async fn install_npm(args: (&Option<String>, &Option<String>, &PathBuf, &Pat
 pub async fn execute(args: (Option<String>, Option<String>, PathBuf, PathBuf)) -> Result<(), Error> {
     println!(
         "{} {} Looking up information about the node version..", 
-        style("[1/5]").bold().dim(),
+        style("[1/4]").bold().dim(),
         MAGNIFYING_GLASS
     );
     let node_version = fetch_node_version(&args.0).await?;
 
     println!(
         "{} {} Downloading node executable...", 
-        style("[2/5]").bold().dim(),
+        style("[2/4]").bold().dim(),
         DOWNLOAD
     );
     let node_bytes = install_node((
@@ -123,7 +124,7 @@ pub async fn execute(args: (Option<String>, Option<String>, PathBuf, PathBuf)) -
 
     println!(
         "{} {} Downloading npm...", 
-        style("[3/5]").bold().dim(),
+        style("[3/4]").bold().dim(),
         BOX
     );
     let npm_bytes = install_npm((
@@ -141,17 +142,16 @@ pub async fn execute(args: (Option<String>, Option<String>, PathBuf, PathBuf)) -
     node::create_node(node_version.clone(), &args.3, &node_bytes, &npm_bytes)
         .expect("Bruh!");
 
-    node::symlink_node(
-        &args.3.join(&node_version.version.clone()), 
-        &args.2
-    ).expect("msg");
-
     println!(
         "{} {} {}",
         style("NodeJS succefully installed!").bold().green(), 
-        style("[5/5]").bold().dim(),
+        style("[4/4]").bold().dim(),
         CHECK
     );
+
+    switch((Some(node_version.version), args.1, args.2, args.3))
+        .await
+        .unwrap();
 
     Ok(())
 }
