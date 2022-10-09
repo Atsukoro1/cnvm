@@ -14,5 +14,9 @@ quick_error! {
                 err.as_ref().unwrap_or(&"".to_string())
             )
         }
+
+        NoNodeVersionInstalled(err: Option<String>) {
+            display("No NodeJS version is installed")
+        }
     }
 }

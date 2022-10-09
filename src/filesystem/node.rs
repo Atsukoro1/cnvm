@@ -83,12 +83,52 @@ pub fn remove_symlink(nodepath: &PathBuf) -> Result<(), Error> {
 /// # Returns:
 /// 
 /// * `Result<(), Error>` - Result of the function
-pub fn remove_node(nodeversion: &str, cnvmpath: &PathBuf) -> Result<(), Error> {
-    let node_path = cnvmpath.join(nodeversion);
+pub fn remove_node(version: &str, cnvmpath: &PathBuf) -> Result<(), Error> {
+    let path = cnvmpath.join(node_path(version.to_owned()));
     
-    std::fs::remove_dir_all(&node_path).map_err(|err| {
+    std::fs::remove_dir_all(path).map_err(|err| {
         Error::PermissionError(Some(err.to_string()))
     })?;
 
     Ok(())
+}
+
+/// Get the lastest version of node.js installed in the cnvm directory
+/// 
+/// # Arguments:
+/// 
+/// * `cnvmpath` - Path to the cnvm folder
+/// 
+/// # Returns:
+/// 
+/// * `Result<String, Error>` - Result of the function
+/// 
+/// # Example:
+/// 
+/// ```rust
+/// use cnvm::filesystem::node::get_lastest_node;
+/// use std::path::PathBuf;
+/// 
+/// let cnvmpath = PathBuf::from("C:\\Users\\user\\cnvm");
+/// let lastest_node = get_lastest_node(&cnvmpath).unwrap();
+/// 
+/// assert_eq!(lastest_node, "v14.15.4");
+/// ```
+pub fn get_latest_version(cnvmpath: &PathBuf) -> Result<String, Error> {
+    let mut versions = std::fs::read_dir(cnvmpath).map_err(|err| {
+        Error::PermissionError(Some(err.to_string()))
+    })?;
+
+    let mut latest_version: Option<String> = None;
+
+    while let Some(version) = versions.next() {
+        let version = version.unwrap().path();
+        let version = version.file_name().unwrap().to_str().unwrap();
+
+        if version.starts_with("node-v") {
+            latest_version = Some(version.to_string());
+        }
+    }
+
+    latest_version.ok_or(Error::NoNodeVersionInstalled(None))
 }

@@ -1,4 +1,4 @@
-use crate::{commands::BOX, filesystem::node};
+use crate::{commands::{BOX, CROSS}, filesystem::node::{self, get_latest_version, remove_symlink}};
 use std::path::PathBuf;
 use console::style;
 use super::Error;
@@ -35,6 +35,27 @@ pub async fn execute(args: (Option<String>, Option<String>, PathBuf, PathBuf)) -
     );
 
     node::remove_node(&node_version, &args.3).expect("remove node version failed");
+
+    match get_latest_version(&args.3) {
+        Ok(v) => {
+            remove_symlink(&args.2).expect("remove symlink failed");
+            node::symlink_node(&args.3, v.clone(), &args.2).expect("symlink node failed");
+
+            println!(
+                "{} {} NodeJS uninstalled, switched to version {}.",
+                style("[2/2]").bold().dim(),
+                CROSS,
+                v.clone()
+            );
+        },
+        Err(..) => {
+            println!(
+                "{} {} NodeJS uninstalled.",
+                style("[2/2]").bold().dim(),
+                CROSS
+            );
+        }
+    }
 
     Ok(())
 }
