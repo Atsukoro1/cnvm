@@ -71,8 +71,9 @@ pub async fn fetch_node_version(
 /// Fetch from resource and save the Node executable to path
 #[cfg(target_os = "windows")]
 pub async fn install_node(args: (&Option<String>, &Option<String>, &PathBuf, &PathBuf)) -> Vec<u8> {
-    let bytes = fetch_bytes(format!("https://nodejs.org/dist/{}/win-x64/node.exe", 
-        &*args.0.as_ref().unwrap()
+    let bytes = fetch_bytes(format!("https://nodejs.org/dist/{}/node-{}-win-x64.zip", 
+        args.0.as_ref().unwrap(), 
+        args.0.as_ref().unwrap()
     ).as_str()).await;
 
     bytes
@@ -122,24 +123,12 @@ pub async fn execute(args: (Option<String>, Option<String>, PathBuf, PathBuf)) -
         &args.3
     )).await;
 
-    println!(
-        "{} {} Downloading npm...", 
-        style("[3/4]").bold().dim(),
-        BOX
-    );
-    let npm_bytes = install_npm((
-        &Some(node_version.version.clone()), 
-        &args.1,
-        &args.2, 
-        &args.3
-    )).await;
-
     let cfg_creation = cnvm::config_file_init(&args.3);
     if cfg_creation.is_err() {
         return Err(Error::ConfigFileError(None));
     };
 
-    node::create_node(node_version.clone(), &args.3, &node_bytes, &npm_bytes)
+    node::create_node(node_version.clone(), &args.3, &node_bytes)
         .expect("Bruh!");
 
     println!(

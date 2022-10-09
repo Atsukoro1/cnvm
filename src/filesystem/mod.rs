@@ -2,6 +2,7 @@ use quick_error::quick_error;
 
 pub mod cnvm;
 pub mod node;
+pub mod paths;
 
 quick_error! {
     #[derive(Debug)]
