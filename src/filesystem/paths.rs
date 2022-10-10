@@ -34,7 +34,15 @@ pub fn node_ext() -> String {
 
 /// Create path to the symlinked directory containing symlinked 
 /// node files, this is done with command and is unique for each OS
-pub fn export_path() -> Result<(), Error> {
+/// 
+/// This function is not used on it's own, but is used in the
+/// check_path function
+/// 
+/// # Returns:
+/// 
+/// * `Result<(), Error>` - Can return error containing the error message
+///                         if adding path fails
+fn export_path() -> Result<(), Error> {
     use std::process::Command;
     use std::env::consts::OS;
 
@@ -49,7 +57,7 @@ pub fn export_path() -> Result<(), Error> {
                     )
                 })?;
         }
-        
+
         "linux" => {
             Command::new("bash")
                 .args(&["-c", "echo 'export PATH=$PATH:$HOME/.cnvm/node' >> ~/.bashrc"])
@@ -59,6 +67,39 @@ pub fn export_path() -> Result<(), Error> {
                         Some(err.to_string())
                     )
                 })?;
+        }
+
+        _ => panic!("Unsupported OS")
+    }
+
+    Ok(())
+}
+
+/// Check if specific directory is in path and if not, add it
+///
+/// # Returns:
+/// 
+/// * `Result<(), Error>` - Can return error containing the error message
+pub fn check_path() -> Result<(), Error> {
+    use std::env::consts::OS;
+
+    match OS {
+        "windows" => {
+            let path = std::env::var("PATH").unwrap();
+            let cnvm_path = std::env::var("USERPROFILE").unwrap() + "\\.cnvm\\node";
+
+            if !path.contains(&cnvm_path) {
+                export_path()?;
+            }
+        }
+
+        "linux" => {
+            let path = std::env::var("PATH").unwrap();
+            let cnvm_path = std::env::var("HOME").unwrap() + "/.cnvm/node";
+
+            if !path.contains(&cnvm_path) {
+                export_path()?;
+            }
         }
 
         _ => panic!("Unsupported OS")
