@@ -28,5 +28,19 @@ quick_error! {
                 err.as_ref().unwrap_or(&"".to_string())
             )
         }
+
+        UnsupportedOS(err: Option<String>) {
+            display(
+                "Your operating system is not supported! {}",
+                err.as_ref().unwrap_or(&"".to_string())
+            )
+        }
+
+        PathError(err: Option<String>) {
+            display(
+                "Can't set path! {}",
+                err.as_ref().unwrap_or(&"".to_string())
+            )
+        }
     }
 }
