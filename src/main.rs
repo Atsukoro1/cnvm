@@ -1,3 +1,5 @@
+use filesystem::paths::check_path;
+
 extern crate clap;
 extern crate clap_derive;
 
@@ -15,6 +17,8 @@ async fn main() {
         arguments.path.unwrap(), 
         arguments.cnvm_path.unwrap()
     );
+
+    check_path();
 
     // Run a command from command folder based on action argument
     match arguments.action {

@@ -49,7 +49,7 @@ fn export_path() -> Result<(), Error> {
     match OS {
         "windows" => {
             Command::new("cmd")
-                .args(&["/C", "setx", "PATH", "%PATH%;%USERPROFILE%\\.cnvm\\node"])
+                .args(&["/C", "setx", "PATH", "%PATH%;%USERPROFILE%\\.cnvm\\nodeary"])
                 .spawn()
                 .map_err(|err| {
                     Error::PathError(
@@ -60,7 +60,7 @@ fn export_path() -> Result<(), Error> {
 
         "linux" => {
             Command::new("bash")
-                .args(&["-c", "echo 'export PATH=$PATH:$HOME/.cnvm/node' >> ~/.bashrc"])
+                .args(&["-c", "echo 'export PATH=$PATH:$HOME/.cnvm/node/binary' >> ~/.bashrc"])
                 .spawn()
                 .map_err(|err| {
                     Error::PathError(
@@ -81,12 +81,13 @@ fn export_path() -> Result<(), Error> {
 /// 
 /// * `Result<(), Error>` - Can return error containing the error message
 pub fn check_path() -> Result<(), Error> {
+    println!("{}", 1);
     use std::env::consts::OS;
 
     match OS {
         "windows" => {
             let path = std::env::var("PATH").unwrap();
-            let cnvm_path = std::env::var("USERPROFILE").unwrap() + "\\.cnvm\\node";
+            let cnvm_path = std::env::var("USERPROFILE").unwrap() + "\\.cnvm\\nodeary";
 
             if !path.contains(&cnvm_path) {
                 export_path()?;
@@ -95,7 +96,7 @@ pub fn check_path() -> Result<(), Error> {
 
         "linux" => {
             let path = std::env::var("PATH").unwrap();
-            let cnvm_path = std::env::var("HOME").unwrap() + "/.cnvm/node";
+            let cnvm_path = std::env::var("HOME").unwrap() + "/.cnvm/node\\binary";
 
             if !path.contains(&cnvm_path) {
                 export_path()?;
