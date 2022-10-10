@@ -16,7 +16,17 @@ quick_error! {
         }
 
         NoNodeVersionInstalled(err: Option<String>) {
-            display("No NodeJS version is installed")
+            display(
+                "No node version installed! {}",
+                err.as_ref().unwrap_or(&"".to_string())
+            )
+        }
+
+        TarUnpackFailed(err: Option<String>) {
+            display(
+                "Failed to unpack tar file! {}", 
+                err.as_ref().unwrap_or(&"".to_string())
+            )
         }
     }
 }

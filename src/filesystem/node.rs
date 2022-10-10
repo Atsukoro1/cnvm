@@ -1,6 +1,8 @@
 use std::path::PathBuf;
 use super::paths::node_path;
+use flate2::read::GzDecoder;
 use super::Error;
+use std::io::Cursor;
 
 /// This function will download the compressed node.js zip file
 /// and extract all of it's content to the specified path
@@ -31,13 +33,24 @@ pub fn create_node(
     Ok(())
 }
 
+/// For UN*X systems, everything is encoded in tar.gz instead of zip
+/// 
+/// This function will download the compressed node.js zip file using
+/// gunzip so we can extract all of it's content and extract all the 
+/// data from tar file to specified path
+/// 
+/// # Arguments:
+/// 
+/// * `path` - Path to the desired node.js directory
+/// * `node_bytes` - Bytes of the compressed tarball containing all files
+///                  for NodeJS to work correctly
 #[cfg(target_os = "linux")]
 pub fn create_node(
     path: &PathBuf,
     node_bytes: &Vec<u8>
 ) -> Result<(), Error> {
-    // Create a tar.gz file from the node bytes
-    let mut node_tar = tar::Archive::new(
+    // Decompress the gzip file
+    let node_gzip: GzDecoder<Cursor<&Vec<u8>>> = flate2::read::GzDecoder::new(
         std::io::Cursor::new(node_bytes)
     );
 
@@ -46,8 +59,15 @@ pub fn create_node(
         Error::PermissionError(Some(err.to_string()))
     })?;
 
-    // Extract the node executable from the tar.gz file
-    node_tar.unpack(path).unwrap();
+    // Unpack tarball and return error if it fails
+    tar::Archive::new(node_gzip)
+        .unpack(&path)
+        .map_err(|e| {
+            return Error::TarUnpackFailed(
+                Some(e.to_string())
+            );
+        })
+        .unwrap();
 
     Ok(())
 }
