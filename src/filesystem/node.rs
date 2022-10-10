@@ -10,6 +10,7 @@ use super::Error;
 /// * `data` - Data of the node version we want to install
 /// * `cnvmpath` - Path to the cnvm folder
 /// * `node_bytes` - Bytes of the node executable
+#[cfg(target_os = "windows")]
 pub fn create_node(
     path: &PathBuf, 
     node_bytes: &Vec<u8>
@@ -30,6 +31,27 @@ pub fn create_node(
     Ok(())
 }
 
+#[cfg(target_os = "linux")]
+pub fn create_node(
+    path: &PathBuf,
+    node_bytes: &Vec<u8>
+) -> Result<(), Error> {
+    // Create a tar.gz file from the node bytes
+    let mut node_tar = tar::Archive::new(
+        std::io::Cursor::new(node_bytes)
+    );
+
+    // Create the directory for the node version
+    std::fs::create_dir_all(&path).map_err(|err| {
+        Error::PermissionError(Some(err.to_string()))
+    })?;
+
+    // Extract the node executable from the tar.gz file
+    node_tar.unpack(path).unwrap();
+
+    Ok(())
+}
+
 /// Symlink the directory from cnvm directory to the path 
 /// where the used version of node.js will be located
 ///
@@ -46,6 +68,17 @@ pub fn symlink_node(cnvmpath: &PathBuf, version: String, nodepath: &PathBuf) -> 
     let path = cnvmpath.join(node_path(version));
 
     std::os::windows::fs::symlink_dir(path, nodepath).map_err(|err| {
+        Error::PermissionError(Some(err.to_string()))
+    })?;
+
+    Ok(())
+}
+
+#[cfg(target_os = "linux")]
+pub fn symlink_node(cnvmpath: &PathBuf, version: String, nodepath: &PathBuf) -> Result<(), Error> {
+    let path = cnvmpath.join(node_path(version));
+
+    std::os::unix::fs::symlink(path, nodepath).map_err(|err| {
         Error::PermissionError(Some(err.to_string()))
     })?;
 

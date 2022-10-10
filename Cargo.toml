@@ -14,4 +14,6 @@ indicatif = "0.17.1"
 zip = "0.6.2"
 quick-error = "2.0.1"
 console = "0.15.2"
+tar = "0.4.38"
 serde = { version = "1.0.145", features = ["derive"] }
+flate2 = { version = "1.0.17", default-features = true }
