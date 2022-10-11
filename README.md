@@ -17,7 +17,7 @@ Manage your **node.js versions**, easier and faster!
 
 ## 📝 Description
 
-CNVM is simple command line tool to switch and install your node versions. Managing multiple versions of Node.js can be annoying, everything is easier with CNVM just execute one command and everything is done!
+CNVM is the best command line tool for switching and installing node versions! It makes managing multiple versions of Node.js a breeze! Just execute one command and everything is done!
 
 ## ⚡️ Quick start
 
