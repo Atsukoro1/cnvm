@@ -1,5 +1,5 @@
-use console::style;
 use filesystem::paths::check_path;
+use console::style;
 
 extern crate clap;
 extern crate clap_derive;
@@ -19,19 +19,10 @@ async fn main() {
         arguments.cnvm_path.as_ref().unwrap()
     );
 
-    let is_in_path: (bool, bool) = check_path(
+    check_path(
         arguments.path.as_ref().unwrap(),
-         arguments.cnvm_path.as_ref().unwrap()
+        arguments.cnvm_path.as_ref().unwrap()
     );
-
-    if !is_in_path.0 || !is_in_path.1 {
-        println!(
-            "{} {} {}",
-            style("[!]").bold().dim(),
-            style("✖").bold().red(),
-            "Directory variables are not in path, some commands might not work."
-        );
-    }
 
     // Run a command from command folder based on action argument
     match arguments.action {

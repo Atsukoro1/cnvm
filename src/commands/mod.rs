@@ -4,6 +4,7 @@ use quick_error::quick_error;
 pub mod install;
 pub mod uninstall;
 pub mod switch;
+pub mod init;
 
 quick_error! {
     #[derive(Debug)]

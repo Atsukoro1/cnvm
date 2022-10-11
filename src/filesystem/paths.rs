@@ -1,5 +1,6 @@
 use std::env::consts::ARCH;
 use std::path::PathBuf;
+use console::style;
 
 /// Determine path to remote resource name based on the operating system and
 /// CPU architecture
@@ -51,16 +52,10 @@ pub fn node_ext() -> String {
 /// 
 /// * `node_path` - Path to the directory where symlinked node directory is located
 /// * `cnvm_path` - Path to the cnvm directory
-/// 
-///
-/// # Returns:
-/// 
-/// * `bool` - If the directory was added to the path
-pub fn check_path(node_path: &PathBuf, cnvm_path: &PathBuf) -> (bool, bool) {
+pub fn check_path(node_path: &PathBuf, cnvm_path: &PathBuf) {
     let path = std::env::var("PATH").unwrap();
 
-    return (
-        path.contains(node_path.to_str().unwrap()),
-        path.contains(cnvm_path.to_str().unwrap())
-    )
+    if !path.contains(node_path.to_str().unwrap()) || !path.contains(cnvm_path.to_str().unwrap()) {
+        println!("Remind no path for now");
+    }
 }
