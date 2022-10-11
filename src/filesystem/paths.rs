@@ -1,4 +1,5 @@
 use std::env::consts::ARCH;
+use std::process::Command;
 use super::Error;
 
 /// These four functions are used to determine the names and
@@ -41,35 +42,30 @@ pub fn node_ext() -> String {
 /// 
 /// * `Result<(), Error>` - Can return error containing the error message
 ///                         if adding path fails
+#[cfg(target_os = "windows")]
 fn export_path() -> Result<(), Error> {
-    use std::process::Command;
-    use std::env::consts::OS;
+    Command::new("cmd")
+        .args(&["/C", "setx", "PATH", "%PATH%;%USERPROFILE%\\.cnvm\\nodeary"])
+        .spawn()
+        .map_err(|err| {
+            Error::PathError(
+                Some(err.to_string())
+            )
+        })?;
 
-    match OS {
-        "windows" => {
-            Command::new("cmd")
-                .args(&["/C", "setx", "PATH", "%PATH%;%USERPROFILE%\\.cnvm\\nodeary"])
-                .spawn()
-                .map_err(|err| {
-                    Error::PathError(
-                        Some(err.to_string())
-                    )
-                })?;
-        }
+    Ok(())
+}
 
-        "linux" => {
-            Command::new("bash")
-                .args(&["-c", "echo 'export PATH=$PATH:$HOME/.cnvm/node/binary' >> ~/.bashrc"])
-                .spawn()
-                .map_err(|err| {
-                    Error::PathError(
-                        Some(err.to_string())
-                    )
-                })?;
-        }
-
-        _ => panic!("Unsupported OS")
-    }
+#[cfg(target_os = "linux")]
+fn export_path() -> Result<(), Error> {
+    Command::new("bash")
+        .args(&["-c", "echo 'export PATH=$PATH:$HOME/.cnvm/node/binary' >> ~/.bashrc"])
+        .spawn()
+        .map_err(|err| {
+            Error::PathError(
+                Some(err.to_string())
+            )
+        })?;
 
     Ok(())
 }
@@ -79,30 +75,25 @@ fn export_path() -> Result<(), Error> {
 /// # Returns:
 /// 
 /// * `Result<(), Error>` - Can return error containing the error message
+#[cfg(target_os = "windows")]
 pub fn check_path() -> Result<(), Error> {
-    println!("{}", 1);
-    use std::env::consts::OS;
+    let path = std::env::var("PATH").unwrap();
+    let cnvm_path = std::env::var("USERPROFILE").unwrap() + "\\.cnvm\\nodeary";
 
-    match OS {
-        "windows" => {
-            let path = std::env::var("PATH").unwrap();
-            let cnvm_path = std::env::var("USERPROFILE").unwrap() + "\\.cnvm\\nodeary";
+    if !path.contains(&cnvm_path) {
+        export_path()?;
+    }
 
-            if !path.contains(&cnvm_path) {
-                export_path()?;
-            }
-        }
+    Ok(())
+}
 
-        "linux" => {
-            let path = std::env::var("PATH").unwrap();
-            let cnvm_path = std::env::var("HOME").unwrap() + "/.cnvm/node\\binary";
+#[cfg(target_os = "linux")]
+pub fn check_path() -> Result<(), Error> {
+    let path = std::env::var("PATH").unwrap();
+    let cnvm_path = std::env::var("HOME").unwrap() + "/.cnvm/node\\binary";
 
-            if !path.contains(&cnvm_path) {
-                export_path()?;
-            }
-        }
-
-        _ => panic!("Unsupported OS")
+    if !path.contains(&cnvm_path) {
+        export_path()?;
     }
 
     Ok(())

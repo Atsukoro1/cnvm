@@ -1,8 +1,6 @@
 use std::path::PathBuf;
 use super::paths::node_path;
 use super::Error;
-use std::io::Cursor;
-use flate2::read::GzDecoder;
 
 /// This function will download the compressed node.js zip file
 /// and extract all of it's content to the specified path
@@ -49,6 +47,10 @@ pub fn create_node(
     path: &PathBuf,
     node_bytes: &Vec<u8>
 ) -> Result<(), Error> {
+    use std::io::Cursor;
+    use flate2::read::GzDecoder;
+    use tar::Archive;
+
     // Decompress the gzip file
     let node_gzip: GzDecoder<Cursor<&Vec<u8>>> = flate2::read::GzDecoder::new(
         std::io::Cursor::new(node_bytes)
@@ -60,7 +62,7 @@ pub fn create_node(
     })?;
 
     // Unpack tarball and return error if it fails
-    tar::Archive::new(node_gzip)
+    Archive::new(node_gzip)
         .unpack(&path)
         .map_err(|e| {
             return Error::TarUnpackFailed(
