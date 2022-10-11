@@ -1,3 +1,4 @@
+use std::env::consts::ARCH;
 use super::Error;
 
 /// These four functions are used to determine the names and
@@ -13,8 +14,6 @@ pub fn node_path(version: String) -> String {
 
 #[cfg(target_os = "linux")]
 pub fn node_path(version: String) -> String {
-    use std::env::consts::ARCH;
-
     return format!(
         "node-{}-linux-{}",
         version,
