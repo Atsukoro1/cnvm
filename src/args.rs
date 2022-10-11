@@ -50,8 +50,8 @@ pub struct Args {
     /// 
     /// The default path is:
     ///     - Windows: %USERPROFILE%\nodejs
-    ///     - Linux: $HOME/nodejs
-    ///     - MacOS: $HOME/nodejs
+    ///     - Linux: $HOME/.nodejs
+    ///     - MacOS: $HOME/.nodejs
     #[clap(
         short, 
         long, 
@@ -84,7 +84,7 @@ impl Args {
 
         if args.path.is_none() {
             args.path = Some(std::path::PathBuf::from(
-                dirs::home_dir().unwrap().join("nodejs")
+                dirs::home_dir().unwrap().join(".nodejs")
             ));
         }
 

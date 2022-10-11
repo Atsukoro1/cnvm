@@ -1,9 +1,16 @@
 use std::env::consts::ARCH;
-use std::process::Command;
-use super::Error;
+use std::path::PathBuf;
 
-/// These four functions are used to determine the names and
-/// extesions for the source node version
+/// Determine path to remote resource name based on the operating system and
+/// CPU architecture
+/// 
+/// # Arguments:
+/// 
+/// * `version` - Version of node.js to download
+/// 
+/// # Returns:
+/// 
+/// * `String` - Path to the remote resource
 #[cfg(target_os = "windows")]
 pub fn node_path(version: String) -> String {
     return match ARCH {
@@ -22,6 +29,12 @@ pub fn node_path(version: String) -> String {
     );
 }
 
+/// Determine path to remote resource extension based on the operating system
+/// and CPU architecture
+/// 
+/// # Returns
+/// 
+/// * `String` - Path to the remote resource
 #[cfg(target_os = "windows")]
 pub fn node_ext() -> String {
     return ".zip".to_string()
@@ -32,69 +45,22 @@ pub fn node_ext() -> String {
     return ".tar.gz".to_string()
 }
 
-/// Create path to the symlinked directory containing symlinked 
-/// node files, this is done with command and is unique for each OS
+/// Check if specific directory is in path
 /// 
-/// This function is not used on it's own, but is used in the
-/// check_path function
+/// # Arguments:
 /// 
-/// # Returns:
+/// * `node_path` - Path to the directory where symlinked node directory is located
+/// * `cnvm_path` - Path to the cnvm directory
 /// 
-/// * `Result<(), Error>` - Can return error containing the error message
-///                         if adding path fails
-#[cfg(target_os = "windows")]
-fn export_path() -> Result<(), Error> {
-    Command::new("cmd")
-        .args(&["/C", "setx", "PATH", "%PATH%;%USERPROFILE%\\.cnvm\\nodeary"])
-        .spawn()
-        .map_err(|err| {
-            Error::PathError(
-                Some(err.to_string())
-            )
-        })?;
-
-    Ok(())
-}
-
-#[cfg(target_os = "linux")]
-fn export_path() -> Result<(), Error> {
-    Command::new("bash")
-        .args(&["-c", "echo 'export PATH=$PATH:$HOME/.cnvm/node/binary' >> ~/.bashrc"])
-        .spawn()
-        .map_err(|err| {
-            Error::PathError(
-                Some(err.to_string())
-            )
-        })?;
-
-    Ok(())
-}
-
-/// Check if specific directory is in path and if not, add it
 ///
 /// # Returns:
 /// 
-/// * `Result<(), Error>` - Can return error containing the error message
-#[cfg(target_os = "windows")]
-pub fn check_path() -> Result<(), Error> {
+/// * `bool` - If the directory was added to the path
+pub fn check_path(node_path: &PathBuf, cnvm_path: &PathBuf) -> (bool, bool) {
     let path = std::env::var("PATH").unwrap();
-    let cnvm_path = std::env::var("USERPROFILE").unwrap() + "\\.cnvm\\nodeary";
 
-    if !path.contains(&cnvm_path) {
-        export_path()?;
-    }
-
-    Ok(())
-}
-
-#[cfg(target_os = "linux")]
-pub fn check_path() -> Result<(), Error> {
-    let path = std::env::var("PATH").unwrap();
-    let cnvm_path = std::env::var("HOME").unwrap() + "/.cnvm/node\\binary";
-
-    if !path.contains(&cnvm_path) {
-        export_path()?;
-    }
-
-    Ok(())
+    return (
+        path.contains(node_path.to_str().unwrap()),
+        path.contains(cnvm_path.to_str().unwrap())
+    )
 }

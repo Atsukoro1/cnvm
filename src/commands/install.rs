@@ -105,7 +105,7 @@ pub async fn install_node(args: (&Option<String>, &Option<String>, &PathBuf, &Pa
 /// * `npmversion` - Version of npm to install
 /// * `nodepath` - Path where node should be symlinked
 /// * `cnvmpath` - Path to the cnvm folder
-pub async fn execute(args: (Option<String>, Option<String>, PathBuf, PathBuf)) -> Result<(), Error> {
+pub async fn execute(args: (Option<String>, Option<String>, &PathBuf, &PathBuf)) -> Result<(), Error> {
     println!(
         "{} {} Looking up information about the node version..", 
         style("[1/3]").bold().dim(),

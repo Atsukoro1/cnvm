@@ -16,7 +16,7 @@ use super::Error;
 /// * `npmversion` - Version of npm to install
 /// * `nodepath` - Path where node should be symlinked
 /// * `cnvmpath` - Path to the cnvm folder
-pub async fn execute(args: (Option<String>, Option<String>, PathBuf, PathBuf)) -> Result<(), Error> {
+pub async fn execute(args: (Option<String>, Option<String>, &PathBuf, &PathBuf)) -> Result<(), Error> {
     let node_version = match &args.0 {
         Some(v) => {
             if v.starts_with("v") {
