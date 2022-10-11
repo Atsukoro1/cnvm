@@ -15,13 +15,20 @@ Manage your **node.js versions**, easier and faster!
 <br>
 </div>
 
-## ⚙️ Commands & Options
+## 📝 Description
 
+CNVM is simple command line tool to switch and install your node versions. Managing multiple versions of Node.js can be annoying, everything is easier with CNVM just execute one command and everything is done!
+
+## ⚡️ Quick start
+
+- This section will be filled later right before the first release.
+
+## ⚙️ Commands & Options
 
 | Option | Description                                              | Type   | Default | Required? |
 |--------|----------------------------------------------------------|--------|---------|-----------|
-| `-v`   | Specify version to switch to. | `String` | `false` | Yes        |
-| `-c`   | Specify path to cnvm folder (this folder is storing all installed versions of node). | `String` | `false` | No        |
+| `-v`   | Specify version to work with. | `String` | `false` | Yes        |
+| `-c`   | Specify path to cnvm folder (this folder does contain all installed versions of node). | `String` | `false` | No        |
 
 ### `install`
 
