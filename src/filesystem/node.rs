@@ -1,8 +1,8 @@
 use std::path::PathBuf;
 use super::paths::node_path;
-use flate2::read::GzDecoder;
 use super::Error;
 use std::io::Cursor;
+use flate2::read::GzDecoder;
 
 /// This function will download the compressed node.js zip file
 /// and extract all of it's content to the specified path

@@ -17,7 +17,14 @@ quick_error! {
 
         ConfigDirError(err: Option<String>) {
             display(
-                "{}", 
+                "Failed to create config directory! {}", 
+                err.as_ref().unwrap_or(&"".to_string())
+            )
+        }
+
+        PermissionError(err: Option<String>) {
+            display(
+                "Please run this program again with elevated permissions! {}", 
                 err.as_ref().unwrap_or(&"".to_string())
             )
         }

@@ -6,8 +6,8 @@ use super::Error;
 #[cfg(target_os = "windows")]
 pub fn node_path(version: String) -> String {
     return match ARCH {
-        "x86" => format!("node-{}-x86", version),
-        "x86_64" => format!("node-{}-x64", version),
+        "x86" => format!("node-{}-win-x86", version),
+        "x86_64" => format!("node-{}-win-x64", version),
         _ => panic!("Invalid CPU architecture")
     }
 }

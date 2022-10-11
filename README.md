@@ -27,7 +27,7 @@ CNVM is the best command line tool for switching and installing node versions! I
 
 | Option | Description                                              | Type   | Default | Required? |
 |--------|----------------------------------------------------------|--------|---------|-----------|
-| `-v`   | Specify version to work with. | `String` | `false` | Yes        |
+| `-v`   | Specify version to work with. | `String` | Nothing | Yes        |
 | `-c`   | Specify path to cnvm folder (this folder does contain all installed versions of node). | `String` | `false` | No        |
 
 ### `install`

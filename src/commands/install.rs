@@ -22,6 +22,7 @@ pub async fn fetch_bytes(url: &str) -> Result<Vec<u8>, Error> {
     let res = reqwest::get(url).await;
 
     if res.is_err() || res.as_ref().unwrap().status() != 200 {
+        println!("{}", url);
         return Err(Error::InvalidVersion(
             Some(String::from("Could not fetch bytes from remote resource"))
         ));
@@ -150,7 +151,9 @@ pub async fn execute(args: (Option<String>, Option<String>, PathBuf, PathBuf)) -
 
     switch((Some(node_version.version), args.1, args.2, args.3))
         .await
-        .unwrap();
+        .map_err(|err| {
+            return err;
+        })?;
 
     Ok(())
 }

@@ -35,12 +35,17 @@ pub async fn execute(args: (Option<String>, Option<String>, PathBuf, PathBuf)) -
         &node_version
     );
 
-    remove_symlink(&args.2).expect("remove symlink failed");
-    node::symlink_node(
+    if remove_symlink(&args.2).is_err() {
+        return Err(Error::PermissionError(None));
+    };
+
+    if node::symlink_node(
         &args.3,
         node_version, 
         &args.2
-    ).expect("linked failing");
+    ).is_err() {
+        return Err(Error::PermissionError(None));
+    };
 
     println!(
         "{} {} Done", 
