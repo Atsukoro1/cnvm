@@ -29,7 +29,7 @@ async fn main() {
             "{} {} {}",
             style("[!]").bold().dim(),
             style("✖").bold().red(),
-            "Path not found, please run cnvm init, otherwise some commands might not work."
+            "Directory variables are not in path, some commands might not work."
         );
     }
 
