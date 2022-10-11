@@ -1,4 +1,4 @@
-use crate::{commands::{BOX, CROSS}, filesystem::node::{self, get_latest_version, remove_symlink}};
+use crate::filesystem::node::{self, get_latest_version, remove_symlink};
 use std::path::PathBuf;
 use console::style;
 use super::Error;
@@ -30,7 +30,7 @@ pub async fn execute(args: (Option<String>, Option<String>, PathBuf, PathBuf)) -
     println!(
         "{} {} Uninstalling version {} of Node...",
         style("[1/2]").bold().dim(),
-        BOX,
+        style("✔").bold().green(),
         &node_version
     );
 
@@ -44,7 +44,7 @@ pub async fn execute(args: (Option<String>, Option<String>, PathBuf, PathBuf)) -
             println!(
                 "{} {} NodeJS uninstalled, switched to version {}.",
                 style("[2/2]").bold().dim(),
-                CROSS,
+                style("✔").bold().green(),
                 v.clone()
             );
         },
@@ -52,7 +52,7 @@ pub async fn execute(args: (Option<String>, Option<String>, PathBuf, PathBuf)) -
             println!(
                 "{} {} NodeJS uninstalled.",
                 style("[2/2]").bold().dim(),
-                CROSS
+                style("✔").bold().green()
             );
         }
     }

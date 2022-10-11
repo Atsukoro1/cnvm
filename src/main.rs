@@ -1,4 +1,4 @@
-use filesystem::paths::check_path;
+use console::style;
 
 extern crate clap;
 extern crate clap_derive;
@@ -18,15 +18,13 @@ async fn main() {
         arguments.cnvm_path.unwrap()
     );
 
-    check_path();
-
     // Run a command from command folder based on action argument
     match arguments.action {
         args::Action::install => commands::install::execute(para).await,
         args::Action::uninstall => commands::uninstall::execute(para).await,
         args::Action::switch => commands::switch::execute(para).await,
     }.map_err(|err| {
-        eprintln!("{} {}", commands::CROSS, err);
+        eprintln!("{}  {}", style("✖").red(), err);
         std::process::exit(1);
     });
 }

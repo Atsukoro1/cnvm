@@ -1,6 +1,5 @@
 use serde::{Serialize, Deserialize};
 use quick_error::quick_error;
-use console::Emoji;
 
 pub mod install;
 pub mod uninstall;
@@ -12,14 +11,13 @@ quick_error! {
         /// An invalid version of NodeJS was provided
         InvalidVersion(err: Option<String>) {
             display(
-                "An invalid version of NodeJS was provided! {}", 
-                err.as_ref().unwrap_or(&"".to_string())
+                "Invalid version of Node.js provided!",
             )
         }
 
-        ConfigFileError(err: Option<String>) {
+        ConfigDirError(err: Option<String>) {
             display(
-                "An error occured while trying to read or write to the config file! {}", 
+                "{}", 
                 err.as_ref().unwrap_or(&"".to_string())
             )
         }
@@ -34,9 +32,3 @@ pub struct NodeVersion {
     pub date: String,
     pub files: Vec<String>
 }
-
-const DOWNLOAD: Emoji = Emoji("📥 ", " ");
-const MAGNIFYING_GLASS: Emoji<'_, '_> = Emoji("🔍 ", " ");
-const BOX: Emoji<'_, '_> = Emoji("📦 ", " ");
-const CHECK: Emoji = Emoji("✅ ", " ");
-pub const CROSS: Emoji = Emoji("❌ ", " ");

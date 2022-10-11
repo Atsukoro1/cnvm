@@ -3,11 +3,7 @@ use crate::{
     filesystem::node::{
         remove_symlink, 
         self
-    }, 
-    commands::{
-        BOX, 
-        CHECK
-    }
+    },
 };
 use std::path::PathBuf;
 use super::Error;
@@ -35,7 +31,7 @@ pub async fn execute(args: (Option<String>, Option<String>, PathBuf, PathBuf)) -
     println!(
         "{} {} Switching to version {} of Node...",
         style("[1/2]").bold().dim(),
-        BOX,
+        style("✔").bold().green(),
         &node_version
     );
 
@@ -49,7 +45,7 @@ pub async fn execute(args: (Option<String>, Option<String>, PathBuf, PathBuf)) -
     println!(
         "{} {} Done", 
         style("[2/2]").bold().dim(), 
-        CHECK
+        style("✔").bold().green(),
     );
 
     Ok(())
