@@ -42,6 +42,10 @@ cnvm install -v <version>
 
 Switch to a different Node version, **the version must be installed** before switching to it.
 
+```bash
+cnvm switch -v <version>
+```
+
 ### `uninstall`
 
 Uninstall specific Node version from your system, a switch will be automatically used to switch to latest stable version.
