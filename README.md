@@ -29,7 +29,7 @@ CNVM is the best command line tool for switching and installing node versions! I
 
 ```bash
 # If you haven't change anything this dir will be ~/.nodejs/bin
-export PATH="/path_to_the_node_binary_dir:$PATH"
+export PATH="/home/<yourname>/.nodejs/bin:$PATH"
 ```
 
 3. Move the binary to the /bin directory
