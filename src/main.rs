@@ -28,7 +28,7 @@ async fn main() {
     match arguments.action {
         args::Action::install => commands::install::execute(para).await,
         args::Action::uninstall => commands::uninstall::execute(para).await,
-        args::Action::switch => commands::switch::execute(para).await,
+        args::Action::switch => commands::switch::execute(para).await
     }.map_err(|err| {
         eprintln!(
             "{}  {}  {}", 

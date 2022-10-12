@@ -129,7 +129,7 @@ pub async fn execute(args: (Option<String>, Option<String>, &PathBuf, &PathBuf))
             std::process::exit(1);
         })?;
 
-    let cfg_creation = cnvm::config_file_init(&args.3);
+    let cfg_creation = cnvm::file_init(&args.3);
     if cfg_creation.is_err() {
         return Err(Error::ConfigDirError(None));
     };

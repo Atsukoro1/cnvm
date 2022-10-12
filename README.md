@@ -21,7 +21,32 @@ CNVM is the best command line tool for switching and installing node versions! I
 
 ## ⚡️ Quick start
 
-- This section will be filled later right before the first release.
+### 🔨 Installing on Linux
+
+1. Download the prebuilt binary [here](https://github.com/Atsukoro1/cnvm/releases)
+
+2. Add the node binaries directory to the path
+
+```bash
+# If you haven't change anything this dir will be ~/.nodejs/bin
+export PATH="/path_to_the_node_binary_dir:$PATH"
+```
+
+3. Move the binary to the /bin directory
+
+```bash
+# Assuming the binary downloaded to "Download" directory
+mv ~/Downloads/binary ~/bin/cnvm
+```
+
+### 🔨 Installing on Windows
+
+1. Download the prebuilt executable [here](https://github.com/Atsukoro1/cnvm/releases)
+
+2. Move the downloaded executable to any folder you want
+
+3. Now add C:\users\<your_name>\.node.js (assuming you will not change the path during the node installation process) and 
+the directory you moved the executable to, to the PATH. In case you don't know how to add folders to PATH on windows, use [this guide](https://stackoverflow.com/questions/44272416/how-to-add-a-folder-to-path-environment-variable-in-windows-10-with-screensho).
 
 ## ⚙️ Commands & Options
 
