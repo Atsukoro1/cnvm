@@ -25,7 +25,7 @@ CNVM is the best command line tool for switching and installing node versions! I
 
 1. Download the prebuilt binary [here](https://github.com/Atsukoro1/cnvm/releases)
 
-2. Add the node binaries directory to the path
+2. Add the node binaries directory to the path using the *.bashrc* file (if you use bash) or *.zshrc* if you use zsh. This folders should be located in your home directory
 
 ```bash
 # If you haven't change anything this dir will be ~/.nodejs/bin
